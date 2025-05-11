@@ -52,9 +52,9 @@ async def handle_photo(message: Message, state: FSMContext):
 async def stop_flood(message: Message):
     await message.answer('Подождите, ответ генерируется')
 
-@router.message()
-async def generating(message: Message, state: FSMContext):
-    await state.set_state(Gen.wait)
-    response =  await ai_generate(message.text)
-    await message.answer(response, parse_mode='Markdown')
-    await state.clear()
+# @router.message()
+# async def generating(message: Message, state: FSMContext):
+#     await state.set_state(Gen.wait)
+#     response =  await ai_generate(message.text)
+#     await message.answer(response, parse_mode='Markdown')
+#     await state.clear()
