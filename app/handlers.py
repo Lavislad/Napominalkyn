@@ -2,9 +2,10 @@ import os
 import tempfile
 from aiogram import F, Router
 from aiogram.types import Message
-from aiogram.filters import CommandStart
+from aiogram.filters import CommandStart, Command
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
+from aiogram.enums import ChatAction
 from app.generate import ai_generate
 
 
@@ -28,11 +29,14 @@ async def cmd_pic(message: Message, state: FSMContext):
 @router.message(Gen.pic_wait, F.photo)
 async def handle_photo(message: Message, state: FSMContext):
     await state.set_state(Gen.wait)
+    await message.bot.send_chat_action(
+        chat_id=message.chat.id,
+        action=ChatAction.TYPING)
 
     photo = message.photo[-1]
     file = await message.bot.get_file(photo.file_id)
 
-    with tempfile.NamedTemporaryFile(delete_on_close=False, suffix='.jpg') as temp_file:
+    with tempfile.NamedTemporaryFile(delete=False, suffix='.jpg') as temp_file:
         await message.bot.download_file(file.file_path, temp_file.name)
         temp_file_path = temp_file.name
 
